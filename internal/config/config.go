@@ -66,6 +66,7 @@ func loadDatabaseConfig() DatabaseConfig {
 // Helper function to get environment variables with default values
 func getEnv(key, defaultValue string) string {
 	if value, exists := os.LookupEnv(key); exists {
+	  fmt.Println("value:", value)
 		return value
 	}
 	return defaultValue
