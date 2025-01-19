@@ -4,8 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 type User struct {
@@ -16,17 +14,7 @@ type User struct {
 
 var db *gorm.DB
 
-func InitDB(dsn string) {
-	var err error
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect database")
-	}
-
-	db.AutoMigrate(&User{})
-}
-
-func CreateUser(c *gin.Context) {
+func CreateUser(c *gin.Context, db *gorm.DB) {
 	var user User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -40,7 +28,7 @@ func CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, user)
 }
 
-func GetUser(c *gin.Context) {
+func GetUser(c *gin.Context, db *gorm.DB) {
 	id := c.Param("id")
 	var user User
 

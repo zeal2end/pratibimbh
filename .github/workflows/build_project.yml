@@ -2,10 +2,10 @@ name: Build and Test Go Project
 on:
   push:
     branches:
-      - develop_manas
+      - develop
   pull_request:
     branches:
-      - main
+      - develop
 
 jobs:
   build:
