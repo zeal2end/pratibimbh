@@ -8,7 +8,6 @@ import (
 	"syscall"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/zeal2end/pratibimbh/internal/config"
 	"github.com/zeal2end/pratibimbh/internal/handlers"
@@ -18,11 +17,7 @@ import (
 func main() {
 	cfg := config.Load()
 
-	db, err := sqlx.Connect("postgres", cfg.DatabaseURL)
-	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
-	}
-	defer db.Close()
+	handlers.InitDB(cfg.DatabaseURL)
 
 	r := gin.New()
 	r.Use(gin.Recovery())
@@ -31,6 +26,8 @@ func main() {
 	api := r.Group("/api")
 	{
 		api.GET("/health", handlers.HealthCheck)
+		api.GET("/user/:id", handlers.GetUser)
+		api.POST("/user", handlers.CreateUser)
 	}
 
 	srv := &http.Server{
