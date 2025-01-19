@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 	"github.com/zeal2end/pratibimbh/internal/config"
+	"github.com/zeal2end/pratibimbh/internal/database"
+	"github.com/zeal2end/pratibimbh/internal/di"
 	"github.com/zeal2end/pratibimbh/internal/handlers"
 	"github.com/zeal2end/pratibimbh/internal/middleware"
 )
@@ -17,7 +19,9 @@ import (
 func main() {
 	cfg := config.Load()
 
-	handlers.InitDB(cfg.DatabaseURL)
+	database.InitDB(cfg.DatabaseURL)
+
+	container := di.NewContainer(database.GetDB())
 
 	r := gin.New()
 	r.Use(gin.Recovery())
@@ -26,9 +30,9 @@ func main() {
 	api := r.Group("/api")
 	{
 		api.GET("/health", handlers.HealthCheck)
-		api.GET("/user/:id", handlers.GetUser)
-		api.GET("/user", handlers.GetUserByUsername)
-		api.POST("/user", handlers.CreateUser)
+		api.GET("/user/:id", container.UserHandler.GetUserByID)
+		api.GET("/user", container.UserHandler.GetUserByName)
+		api.POST("/user", container.UserHandler.CreateUser)
 	}
 
 	srv := &http.Server{
