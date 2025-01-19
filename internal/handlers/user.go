@@ -23,7 +23,7 @@ func InitDB(dsn string) {
 		panic("failed to connect database")
 	}
 
-	db.AutoMigrate(&User{})
+	db.AutoMigrate(&User{}, &Blog{})
 }
 
 func CreateUser(c *gin.Context) {

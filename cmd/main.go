@@ -28,6 +28,9 @@ func main() {
 		api.GET("/health", handlers.HealthCheck)
 		api.GET("/user/:id", handlers.GetUser)
 		api.POST("/user", handlers.CreateUser)
+		api.POST("/createblog", handlers.CreateBlog)
+		api.GET("/getblog/:id", handlers.GetBlog)
+		api.GET("/listblogs", handlers.ListBlogs)
 	}
 
 	srv := &http.Server{
