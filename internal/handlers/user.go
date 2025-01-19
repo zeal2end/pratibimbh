@@ -49,3 +49,13 @@ func GetUser(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, user)
 }
+
+func GetUserByUsername(c *gin.Context) {
+	name := c.Query("name")
+	var user User
+
+	if err := db.Find(&user, "name = ?", name).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+	}
+	c.JSON(http.StatusOK, user)
+}

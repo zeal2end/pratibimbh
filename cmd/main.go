@@ -27,6 +27,7 @@ func main() {
 	{
 		api.GET("/health", handlers.HealthCheck)
 		api.GET("/user/:id", handlers.GetUser)
+		api.GET("/user", handlers.GetUserByUsername)
 		api.POST("/user", handlers.CreateUser)
 	}
 
