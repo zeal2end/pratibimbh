@@ -29,10 +29,14 @@ type DatabaseConfig struct {
 
 // Load returns configuration loaded from environment variables
 func Load() *Config {
-
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println("Error loading .env file")
+	// Load the .env file only if it exists (for local development)
+	if _, err := os.Stat(".env"); err == nil {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println("Error loading .env file")
+		} else {
+			fmt.Println("Loaded .env file successfully")
+		}
 	}
 
 	return &Config{
@@ -62,6 +66,7 @@ func loadDatabaseConfig() DatabaseConfig {
 // Helper function to get environment variables with default values
 func getEnv(key, defaultValue string) string {
 	if value, exists := os.LookupEnv(key); exists {
+	  fmt.Println("value:", value)
 		return value
 	}
 	return defaultValue
@@ -69,5 +74,6 @@ func getEnv(key, defaultValue string) string {
 
 // GetDSN returns database connection string
 func GetDSN() string {
+	// Always try to get DB_URL from environment variable
 	return getEnv("DB_URL", "no url")
 }

@@ -1,6 +1,6 @@
 module github.com/zeal2end/pratibimbh
 
-go 1.23.4
+go 1.23.0
 
 require (
 	github.com/jmoiron/sqlx v1.4.0
