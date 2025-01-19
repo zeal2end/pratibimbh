@@ -12,7 +12,6 @@ import (
 	"github.com/zeal2end/pratibimbh/internal/config"
 	"github.com/zeal2end/pratibimbh/internal/database"
 	"github.com/zeal2end/pratibimbh/internal/di"
-	"github.com/zeal2end/pratibimbh/internal/handlers"
 	"github.com/zeal2end/pratibimbh/internal/middleware"
 )
 
@@ -28,12 +27,7 @@ func main() {
 	r.Use(middleware.Logger())
 
 	api := r.Group("/api")
-	{
-		api.GET("/health", handlers.HealthCheck)
-		api.GET("/user/:id", container.UserHandler.GetUserByID)
-		api.GET("/user", container.UserHandler.GetUserByName)
-		api.POST("/user", container.UserHandler.CreateUser)
-	}
+	setupRoutes(api, container)
 
 	srv := &http.Server{
 		Addr:    ":" + cfg.Server.Port,
@@ -49,4 +43,15 @@ func main() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
+}
+
+func setupRoutes(api *gin.RouterGroup, container *di.Container) {
+	userGroup := api.Group("/user")
+	{
+		userGroup.GET("/:id", container.UserHandler.GetUserByID)
+		userGroup.GET("", container.UserHandler.GetUserByName)
+		userGroup.POST("", container.UserHandler.CreateUser)
+	}
+
+	// Add more route groups here if needed
 }
