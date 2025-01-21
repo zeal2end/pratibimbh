@@ -22,7 +22,14 @@ func InitDB(dsn string) {
 
 func migrateEntities() {
 	// Add all entities that need to be migrated here
-	DB.AutoMigrate(&repository.User{})
+	// Order matters for foreign key relationships
+	DB.AutoMigrate(
+		&repository.User{},
+		&repository.Topic{},
+		&repository.Tag{},
+		&repository.Blog{},
+		&repository.Comment{},
+	)
 }
 
 func GetDB() *gorm.DB {
